@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Link History - The Build</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--yellow:#f5c518;--yellow-soft:#ffe681;--ink:#171714;--muted:#77756b;--paper:#fffdf5;--line:#dedbcf;--white:#fff;--green:#285f4c;--shadow:0 18px 45px rgba(36,31,5,.1)}
+*{box-sizing:border-box;margin:0;padding:0}
+body{min-height:100vh;font-family:"Space Grotesk",sans-serif;color:var(--ink);background:radial-gradient(circle at 85% 0%,rgba(245,197,24,.2),transparent 28%),linear-gradient(180deg,#fffdf5,#fffaf0)}
+a{color:inherit;text-decoration:none}button,input{font:inherit}
+.site-header{width:min(1160px,calc(100% - 48px));margin:auto;padding:26px 0;display:flex;align-items:center;justify-content:space-between}
+.brand{display:inline-flex;align-items:center;gap:11px;font-size:20px;font-weight:700}.brand-mark{width:34px;height:34px;display:grid;place-items:center;background:var(--yellow);border:2px solid var(--ink);border-radius:8px;box-shadow:3px 3px 0 var(--ink)}
+.header-actions{display:flex;align-items:center;gap:18px}.home-link{color:var(--muted);font-size:14px;font-weight:600}.shorten-btn{padding:10px 15px;border:1.5px solid var(--ink);border-radius:8px;background:var(--yellow);box-shadow:2px 2px 0 var(--ink);font-size:13px;font-weight:700}
+main{width:min(1160px,calc(100% - 48px));margin:auto;padding:52px 0 90px}
+.page-intro{display:flex;align-items:flex-end;justify-content:space-between;gap:30px;margin-bottom:32px}.eyebrow{display:flex;align-items:center;gap:8px;margin-bottom:12px;color:var(--green);font:500 12px "DM Mono";letter-spacing:.08em;text-transform:uppercase}.eyebrow-dot{width:7px;height:7px;border-radius:50%;background:var(--yellow);border:1px solid var(--ink)}
+h1{font-size:clamp(44px,7vw,70px);line-height:.94;letter-spacing:-.06em}.intro-copy{max-width:350px;color:var(--muted);font-size:14px;line-height:1.6}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:24px}.stat{position:relative;overflow:hidden;padding:21px 22px;border:1.5px solid var(--ink);border-radius:11px;background:#fff;box-shadow:4px 4px 0 rgba(23,23,20,.1)}.stat:after{content:"";position:absolute;width:54px;height:54px;right:-17px;bottom:-20px;border-radius:50%;background:var(--yellow-soft)}.stat-label{position:relative;z-index:1;color:var(--muted);font:10px "DM Mono";letter-spacing:.06em;text-transform:uppercase}.stat-number{position:relative;z-index:1;margin-top:7px;font-size:28px;font-weight:700}
+.history-shell{overflow:hidden;border:1.5px solid var(--ink);border-radius:13px;background:#fff;box-shadow:var(--shadow)}
+.toolbar{padding:20px;border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;gap:15px;background:#fffef9}.toolbar-title{font-size:16px;font-weight:700}.toolbar-subtitle{margin-top:3px;color:var(--muted);font-size:12px}.toolbar-actions{display:flex;gap:9px}.search-box{width:235px;height:40px;padding:0 12px;border:1px solid var(--line);border-radius:7px;outline:none;background:#fff;font-size:12px}.search-box:focus{border-color:var(--ink);box-shadow:0 0 0 3px rgba(245,197,24,.18)}.clear-btn,.action-btn,.page-btn{border:1px solid var(--line);border-radius:7px;background:#fff;cursor:pointer;font-size:12px}.clear-btn{height:40px;padding:0 13px;font-weight:600}
+.table-wrap{overflow-x:auto}table{width:100%;border-collapse:collapse;min-width:850px}th{padding:13px 21px;text-align:left;color:var(--muted);background:#faf9f1;border-bottom:1px solid var(--line);font:10px "DM Mono";letter-spacing:.05em;text-transform:uppercase}th:last-child,td:last-child{text-align:right}td{padding:18px 21px;border-bottom:1px solid var(--line);font-size:13px}tbody tr:hover{background:#fffdf3}.short-link{display:inline-flex;align-items:center;gap:7px;font-weight:700}.link-dot{width:7px;height:7px;border-radius:50%;background:var(--green)}.original-url{max-width:330px;overflow:hidden;color:var(--muted);text-overflow:ellipsis;white-space:nowrap}.clicks{font:12px "DM Mono"}.date{color:var(--muted);font:11px "DM Mono"}.row-actions{display:flex;justify-content:flex-end;gap:7px}.action-btn{height:34px;padding:0 11px;font-size:11px;font-weight:600}.action-btn.primary{border-color:var(--ink);background:var(--yellow)}
+.table-footer{padding:15px 20px;border-top:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;color:var(--muted);font:10px "DM Mono"}.pagination{display:flex;gap:5px}.page-btn{width:31px;height:31px}.page-btn.active{border-color:var(--ink);background:var(--yellow);font-weight:700}.empty{display:none;padding:55px 20px;text-align:center;color:var(--muted)}footer{padding:0 24px 25px;text-align:center;color:var(--muted);font:10px "DM Mono"}.toast{position:fixed;right:22px;bottom:22px;padding:12px 15px;border:1.5px solid var(--ink);border-radius:8px;background:var(--yellow);box-shadow:3px 3px 0 var(--ink);font-size:12px;font-weight:700;opacity:0;transform:translateY(12px);transition:.2s}.toast.show{opacity:1;transform:none}
+@media(max-width:760px){.page-intro{align-items:flex-start;flex-direction:column}.stats{grid-template-columns:1fr}.toolbar{align-items:flex-start;flex-direction:column}.toolbar-actions,.search-box{width:100%}}
+@media(max-width:640px){.site-header,main{width:min(100% - 32px,1160px)}.site-header{padding:20px 0}.home-link{display:none}.header-actions{gap:10px}.shorten-btn{padding:9px 12px}.table-footer{align-items:flex-start;flex-direction:column}}
+.brand-logo {
+    width: 78px;
+    height: 78px;
+    object-fit: contain;
+    display: block;
+}
+main {
+    width: min(960px, calc(100% - 48px));
+    margin: 0 auto;
+    padding: 35px 0 90px;
+}
+</style>
+</head>
+<body>
+<header class="site-header">
+      <a class="brand" href="#">
+    <img src="logo.png" alt="The Build Logo" class="brand-logo">
+</a>
+<div class="header-actions"><a class="home-link" href="index.html">← Back home</a><a class="shorten-btn" href="index.html">+ Shorten a link</a></div>
+</header>
+
+<main>
+<section class="page-intro">
+<h1>Link history.</h1></div>
+<p class="intro-copy">Every link you've shortened, all in one place. Search, copy, and keep track of your links without the clutter.</p>
+</section>
+
+<section class="stats">
+<div class="stat"><div class="stat-label">Total links</div><div class="stat-number" id="totalLinks">5</div></div>
+<div class="stat"><div class="stat-label">Total clicks</div><div class="stat-number">468</div></div>
+<div class="stat"><div class="stat-label">Most clicked</div><div class="stat-number">248</div></div>
+</section>
+
+<section class="history-shell">
+<div class="toolbar"><div><div class="toolbar-title">All shortened links</div><div class="toolbar-subtitle">Your latest activity and saved URLs</div></div><div class="toolbar-actions"><input class="search-box" id="search" type="search" placeholder="Search your links..."><button class="clear-btn" id="clear">Clear</button></div></div>
+
+<div class="table-wrap">
+<table><thead><tr><th>Short link</th><th>Original URL</th><th>Clicks</th><th>Created</th><th>Actions</th></tr></thead>
+<tbody id="rows">
+<tr><td><span class="short-link"><span class="link-dot"></span>snap.link/launch</span></td><td><div class="original-url">https://www.producthunt.com/posts/snaplink-launch</div></td><td><span class="clicks">248</span></td><td><span class="date">Sep 10, 2026</span></td><td><div class="row-actions"><button class="action-btn copy" data-link="snap.link/launch">Copy</button><button class="action-btn primary">Open</button></div></td></tr>
+<tr><td><span class="short-link"><span class="link-dot"></span>snap.link/notes</span></td><td><div class="original-url">https://docs.example.com/team/weekly-notes-and-updates</div></td><td><span class="clicks">91</span></td><td><span class="date">Sep 08, 2026</span></td><td><div class="row-actions"><button class="action-btn copy" data-link="snap.link/notes">Copy</button><button class="action-btn primary">Open</button></div></td></tr>
+<tr><td><span class="short-link"><span class="link-dot"></span>snap.link/hello</span></td><td><div class="original-url">https://www.snaplink.com/welcome-to-the-internet</div></td><td><span class="clicks">64</span></td><td><span class="date">Sep 05, 2026</span></td><td><div class="row-actions"><button class="action-btn copy" data-link="snap.link/hello">Copy</button><button class="action-btn primary">Open</button></div></td></tr>
+<tr><td><span class="short-link"><span class="link-dot"></span>snap.link/design</span></td><td><div class="original-url">https://www.figma.com/file/example/design-system</div></td><td><span class="clicks">37</span></td><td><span class="date">Sep 03, 2026</span></td><td><div class="row-actions"><button class="action-btn copy" data-link="snap.link/design">Copy</button><button class="action-btn primary">Open</button></div></td></tr>
+<tr><td><span class="short-link"><span class="link-dot"></span>snap.link/team</span></td><td><div class="original-url">https://example.com/team/project-dashboard</div></td><td><span class="clicks">28</span></td><td><span class="date">Aug 30, 2026</span></td><td><div class="row-actions"><button class="action-btn copy" data-link="snap.link/team">Copy</button><button class="action-btn primary">Open</button></div></td></tr>
+</tbody></table>
+<div class="empty" id="empty"><strong>No links found</strong><br>Try a different search term.</div>
+</div>
+
+<div class="table-footer"><span id="count">Showing 5 links</span><div class="pagination"><button class="page-btn active">1</button><button class="page-btn">2</button><button class="page-btn">3</button><button class="page-btn">→</button></div></div>
+</section>
+</main>
+<footer>THE BUILD — URL SHORTENER</footer>
+<div class="toast" id="toast">Link copied</div>
+
+<script>
+const search=document.getElementById("search"),clear=document.getElementById("clear"),rows=[...document.querySelectorAll("#rows tr")],count=document.getElementById("count"),empty=document.getElementById("empty"),toast=document.getElementById("toast");
+function filter(){let q=search.value.toLowerCase().trim(),n=0;rows.forEach(r=>{let ok=r.textContent.toLowerCase().includes(q);r.style.display=ok?"":"none";if(ok)n++});empty.style.display=n?"none":"block";count.textContent=`Showing ${n} link${n===1?"":"s"}`}
+search.oninput=filter;clear.onclick=()=>{search.value="";filter();search.focus()};
+document.querySelectorAll(".copy").forEach(b=>b.onclick=async()=>{try{await navigator.clipboard.writeText(b.dataset.link)}catch(e){}toast.classList.add("show");setTimeout(()=>toast.classList.remove("show"),1600)});
+document.querySelectorAll(".page-btn").forEach(b=>b.onclick=()=>{if(b.textContent!=="→"){document.querySelectorAll(".page-btn").forEach(x=>x.classList.remove("active"));b.classList.add("active")}});
+</script>
+</body>
+</html>

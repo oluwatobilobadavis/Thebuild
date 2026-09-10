@@ -1,0 +1,532 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Login - The Build</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --yellow: #f5c518;
+      --yellow-soft: #ffe681;
+      --ink: #171714;
+      --muted: #77756b;
+      --paper: #fffdf5;
+      --line: #dedbcf;
+      --white: #ffffff;
+      --green: #285f4c;
+      --shadow: 0 18px 45px rgba(36, 31, 5, 0.1);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      color: var(--ink);
+      background: var(--paper);
+      font-family: "Space Grotesk", sans-serif;
+    }
+
+    button,
+    input {
+      font: inherit;
+    }
+
+    button {
+      cursor: pointer;
+    }
+
+    .page {
+      min-height: 100vh;
+      overflow: hidden;
+      background:
+        radial-gradient(circle at 91% 5%, rgba(245, 197, 24, .25), transparent 23rem),
+        radial-gradient(circle at 5% 90%, rgba(40, 95, 76, .07), transparent 22rem),
+        linear-gradient(180deg, #fffdf5 0%, #fffdf5 66%, #f8f5e9 100%);
+    }
+
+    header {
+      width: min(1160px, calc(100% - 48px));
+      margin: 0 auto;
+      padding: 26px 0;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      color: var(--ink);
+      text-decoration: none;
+      font-size: 20px;
+      font-weight: 700;
+      letter-spacing: -.04em;
+    }
+
+    .brand-mark {
+      display: grid;
+      place-items: center;
+      width: 34px;
+      height: 34px;
+      color: var(--ink);
+      background: var(--yellow);
+      border-radius: 10px 10px 10px 3px;
+      font-size: 19px;
+      box-shadow: 3px 3px 0 var(--ink);
+    }
+
+    .back-link {
+      color: var(--muted);
+      text-decoration: none;
+      font-size: 14px;
+      font-weight: 600;
+    }
+
+    .back-link:hover {
+      color: var(--ink);
+    }
+
+    main {
+      width: min(460px, calc(100% - 48px));
+      min-height: calc(100vh - 115px);
+      margin: 0 auto;
+      padding: 62px 0 80px;
+      display: flex;
+      align-items: flex-start;
+      justify-content: center;
+    }
+
+    .login-wrap {
+      width: 100%;
+    }
+
+    .eyebrow {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 7px;
+      color: var(--green);
+      font-family: "DM Mono", monospace;
+      font-size: 11px;
+      font-weight: 500;
+      letter-spacing: .09em;
+      text-transform: uppercase;
+    }
+
+    .eyebrow::before {
+      content: "";
+      width: 7px;
+      height: 7px;
+      background: var(--yellow);
+      border-radius: 50%;
+    }
+
+    h1 {
+      margin: 16px 0 10px;
+      text-align: center;
+      font-size: clamp(42px, 7vw, 58px);
+      line-height: .98;
+      letter-spacing: -.07em;
+    }
+
+    .subtitle {
+      max-width: 360px;
+      margin: 0 auto 30px;
+      color: var(--muted);
+      text-align: center;
+      font-size: 15px;
+      line-height: 1.5;
+    }
+
+    .login-card {
+      padding: 28px;
+      background: var(--white);
+      border: 1px solid var(--ink);
+      border-radius: 13px;
+      box-shadow: var(--shadow);
+    }
+
+    .field {
+      margin-bottom: 17px;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 8px;
+      font-size: 13px;
+      font-weight: 600;
+    }
+
+    .input-wrap {
+      position: relative;
+    }
+
+    input {
+      width: 100%;
+      padding: 14px 15px;
+      color: var(--ink);
+      background: #fffefa;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      outline: none;
+      font-size: 15px;
+      transition: border-color .2s, box-shadow .2s;
+    }
+
+    input:focus {
+      border-color: var(--ink);
+      box-shadow: 0 0 0 3px rgba(245, 197, 24, .18);
+    }
+
+    input::placeholder {
+      color: #aaa79d;
+    }
+
+    .password-toggle {
+      position: absolute;
+      right: 12px;
+      top: 50%;
+      transform: translateY(-50%);
+      padding: 4px;
+      color: var(--muted);
+      background: transparent;
+      border: 0;
+      font-size: 12px;
+      font-weight: 600;
+    }
+
+    .password-toggle:hover {
+      color: var(--ink);
+    }
+
+    .options {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      margin: 4px 0 20px;
+    }
+
+    .remember {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      margin: 0;
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 500;
+    }
+
+    .remember input {
+      width: 14px;
+      height: 14px;
+      accent-color: var(--yellow);
+    }
+
+    .forgot {
+      color: var(--green);
+      font-size: 12px;
+      font-weight: 600;
+      text-decoration: none;
+    }
+
+    .forgot:hover {
+      text-decoration: underline;
+    }
+
+    .login-button {
+      width: 100%;
+      padding: 14px 18px;
+      color: var(--ink);
+      background: var(--yellow);
+      border: 0;
+      border-radius: 8px;
+      font-weight: 700;
+      transition: transform .2s, background .2s;
+    }
+
+    .login-button:hover {
+      background: #ffd83d;
+      transform: translateY(-2px);
+    }
+
+    .divider {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin: 23px 0;
+      color: #aaa79d;
+      font-family: "DM Mono", monospace;
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: .06em;
+    }
+
+    .divider::before,
+    .divider::after {
+      content: "";
+      flex: 1;
+      height: 1px;
+      background: var(--line);
+    }
+
+    .google-button {
+      width: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 11px;
+      padding: 13px 18px;
+      color: var(--ink);
+      background: var(--white);
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      font-weight: 600;
+      transition: border-color .2s, background .2s;
+    }
+
+    .google-button:hover {
+      background: #faf9f2;
+      border-color: var(--ink);
+    }
+
+    .google-icon {
+      width: 19px;
+      height: 19px;
+      display: block;
+    }
+
+    .signup {
+      margin: 23px 0 0;
+      color: var(--muted);
+      text-align: center;
+      font-size: 13px;
+    }
+
+    .signup a {
+      color: var(--green);
+      font-weight: 700;
+      text-decoration: none;
+    }
+
+    .signup a:hover {
+      text-decoration: underline;
+    }
+
+    .message {
+      display: none;
+      margin-top: 14px;
+      padding: 11px 13px;
+      color: var(--green);
+      background: #ecf5ef;
+      border: 1px solid #bad8c7;
+      border-radius: 8px;
+      font-size: 12px;
+      line-height: 1.4;
+    }
+
+    .message.visible {
+      display: block;
+    }
+
+    footer {
+      width: min(460px, calc(100% - 48px));
+      margin: 0 auto;
+      padding: 0 0 28px;
+      color: var(--muted);
+      font-family: "DM Mono", monospace;
+      font-size: 11px;
+      text-align: center;
+    }
+
+    @media (max-width: 640px) {
+      header {
+        width: min(100% - 32px, 1160px);
+        padding: 20px 0;
+      }
+
+      main {
+        width: min(100% - 32px, 460px);
+        padding-top: 45px;
+      }
+
+      .login-card {
+        padding: 22px;
+      }
+
+      h1 {
+        font-size: 48px;
+      }
+    }
+    .brand-logo {
+    width: 78px;
+    height: 78px;
+    object-fit: contain;
+    display: block;
+}
+
+  </style>
+</head>
+
+<body>
+  <div class="page">
+
+    <header>
+      <a class="brand" href="#">
+    <img src="logo.png" alt="The Build Logo" class="brand-logo">
+</a>
+      <a class="back-link" href="index.html">← Back home</a>
+    </header>
+
+    <main>
+      <div class="login-wrap">
+
+        <div class="eyebrow">Welcome back</div>
+
+        <h1>Log in<span style="color: var(--yellow); text-shadow: 2px 2px 0 var(--ink);">.</span></h1>
+
+        <p class="subtitle">
+          Sign in to manage your links, check your history, and keep everything in one place.
+        </p>
+
+        <div class="login-card">
+
+          <form id="login-form">
+
+            <div class="field">
+              <label for="email">Email address</label>
+              <input
+                id="email"
+                type="email"
+                placeholder="you@example.com"
+                autocomplete="email"
+                required
+              >
+            </div>
+
+            <div class="field">
+              <label for="password">Password</label>
+
+              <div class="input-wrap">
+                <input
+                  id="password"
+                  type="password"
+                  placeholder="Enter your password"
+                  autocomplete="current-password"
+                  required
+                >
+
+                <button
+                  class="password-toggle"
+                  id="password-toggle"
+                  type="button"
+                  aria-label="Show password"
+                >
+                  Show
+                </button>
+              </div>
+            </div>
+
+            <div class="options">
+              <label class="remember">
+                <input id="remember" type="checkbox">
+                Remember me
+              </label>
+
+              <a class="forgot" href="forgot-password.html">
+                Forgot password?
+              </a>
+            </div>
+
+            <button class="login-button" type="submit">
+              Log in <span aria-hidden="true">→</span>
+            </button>
+
+          </form>
+
+          <div class="divider">or continue with</div>
+
+          <!--
+            FRONTEND ONLY:
+            This button is ready for Google OAuth.
+            Your backend should connect this action to Google Identity Services
+            / your authentication endpoint.
+          -->
+          <button class="google-button" id="google-login" type="button">
+
+            <svg class="google-icon" viewBox="0 0 24 24" aria-hidden="true">
+              <path fill="#4285F4" d="M21.35 12.23c0-.72-.06-1.42-.18-2.09H12v3.96h5.24a4.48 4.48 0 0 1-1.94 2.94v2.45h3.14c1.84-1.69 2.91-4.18 2.91-7.26z"/>
+              <path fill="#34A853" d="M12 21.7c2.63 0 4.84-.87 6.45-2.36l-3.14-2.45c-.87.58-1.98.92-3.31.92-2.54 0-4.69-1.72-5.46-4.03H3.3v2.53A9.74 9.74 0 0 0 12 21.7z"/>
+              <path fill="#FBBC05" d="M6.54 13.78A5.86 5.86 0 0 1 6.23 12c0-.62.11-1.22.31-1.78V7.69H3.3A9.72 9.72 0 0 0 2.27 12c0 1.56.37 3.04 1.03 4.31l3.24-2.53z"/>
+              <path fill="#EA4335" d="M12 6.19c1.43 0 2.72.49 3.73 1.46l2.8-2.8C16.83 3.19 14.63 2.3 12 2.3a9.74 9.74 0 0 0-8.7 5.39l3.24 2.53C7.31 7.91 9.46 6.19 12 6.19z"/>
+            </svg>
+
+            Continue with Google
+          </button>
+
+          <div class="message" id="message"></div>
+
+          <p class="signup">
+            Don't have an account?
+            <a href="signup.html">Create one</a>
+          </p>
+
+        </div>
+      </div>
+    </main>
+
+    <footer>
+      © 2026 The build &nbsp; / &nbsp; Links made simple.
+    </footer>
+
+  </div>
+
+  <script>
+    const loginForm = document.getElementById("login-form");
+    const password = document.getElementById("password");
+    const passwordToggle = document.getElementById("password-toggle");
+    const googleLogin = document.getElementById("google-login");
+    const message = document.getElementById("message");
+
+    // Show / hide password
+    passwordToggle.addEventListener("click", () => {
+      const isPassword = password.type === "password";
+
+      password.type = isPassword ? "text" : "password";
+      passwordToggle.textContent = isPassword ? "Hide" : "Show";
+      passwordToggle.setAttribute(
+        "aria-label",
+        isPassword ? "Hide password" : "Show password"
+      );
+    });
+
+    // Normal login - connect this to your backend API later
+    loginForm.addEventListener("submit", (event) => {
+      event.preventDefault();
+
+      const email = document.getElementById("email").value.trim();
+
+      message.textContent =
+        `Login request ready for ${email}. Connect this form to your backend authentication endpoint.`;
+
+      message.classList.add("visible");
+    });
+
+    // Google login - connect this to Google OAuth/backend later
+    googleLogin.addEventListener("click", () => {
+      message.textContent =
+        "Google login button is ready. Your backend now needs to connect it to Google OAuth.";
+      message.classList.add("visible");
+    });
+  </script>
+</body>
+</html>

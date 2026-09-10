@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>The Build - URL shortener</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --yellow: #f5c518;
+      --yellow-soft: #ffe681;
+      --ink: #171714;
+      --muted: #77756b;
+      --paper: #fffdf5;
+      --line: #dedbcf;
+      --white: #ffffff;
+      --green: #285f4c;
+      --shadow: 0 18px 45px rgba(15, 14, 8, 0.1);
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      color: var(--ink);
+      background: var(--paper);
+      font-family: "Space Grotesk", sans-serif;
+    }
+
+    button, input { font: inherit; }
+    button { cursor: pointer; }
+
+    .page {
+      min-height: 100vh;
+      overflow: hidden;
+      background:
+        radial-gradient(circle at 91% 5%, rgba(245, 197, 24, .25), transparent 23rem),
+        linear-gradient(180deg, #fffdf5 0%, #fffdf5 66%, #f8f5e9 100%);
+    }
+
+    header {
+      width: min(1160px, calc(100% - 48px));
+      margin: 0 auto;
+      padding: 26px 0;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      color: var(--ink);
+      text-decoration: none;
+      font-size: 20px;
+      font-weight: 700;
+      letter-spacing: -.04em;
+    }
+
+    .brand-mark {
+      display: grid;
+      place-items: center;
+      width: 34px;
+      height: 34px;
+      color: var(--ink);
+      background: var(--yellow);
+      border-radius: 10px 10px 10px 3px;
+      font-size: 19px;
+      box-shadow: 3px 3px 0 var(--ink);
+    }
+
+    nav { display: flex; align-items: center; gap: 28px; }
+    nav a { color: var(--muted); text-decoration: none; font-size: 14px; font-weight: 600; }
+    nav a:hover { color: var(--ink); }
+    .nav-button { padding: 11px 17px; color: var(--ink); border: 1px solid var(--ink); border-radius: 8px; }
+
+    main { width: min(960px, calc(100% - 48px)); margin: 0 auto; padding: 74px 0 90px; }
+
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      color: var(--green);
+      font-family: "DM Mono", monospace;
+      font-size: 11px;
+      font-weight: 500;
+      letter-spacing: .09em;
+      text-transform: uppercase;
+    }
+
+    .eyebrow::before { content: ""; width: 7px; height: 7px; background: var(--yellow); border-radius: 50%; }
+    h1 { max-width: 670px; margin: 18px 0 14px; font-size: clamp(46px, 7vw, 84px); line-height: .97; letter-spacing: -.075em; }
+    .intro { max-width: 520px; margin: 0; color: var(--muted); font-size: 17px; line-height: 1.55; }
+
+    .shorten-card {
+      margin-top: 48px;
+      padding: 9px;
+      display: flex;
+      align-items: center;
+      gap: 9px;
+      background: var(--white);
+      border: 1px solid var(--ink);
+      border-radius: 13px;
+      box-shadow: var(--shadow);
+    }
+
+    .url-input { flex: 1; min-width: 0; padding: 17px 17px; border: 0; outline: 0; color: var(--ink); background: transparent; font-size: 16px; }
+    .url-input::placeholder { color: #a3a095; }
+    .shorten-button { padding: 16px 23px; color: var(--ink); background: var(--yellow); border: 0; border-radius: 8px; font-weight: 700; transition: transform .2s, background .2s; }
+    .shorten-button:hover { background: #ffd83d; transform: translateY(-2px); }
+
+    .result { display: none; align-items: center; justify-content: space-between; gap: 16px; margin-top: 14px; padding: 14px 17px; color: var(--green); background: #ecf5ef; border: 1px solid #bad8c7; border-radius: 9px; }
+    .result.visible { display: flex; animation: rise .35s ease both; }
+    .result-url { color: var(--ink); font-family: "DM Mono", monospace; font-size: 14px; overflow-wrap: anywhere; }
+    .copy-button { padding: 8px 12px; color: var(--green); background: transparent; border: 1px solid #9fc8b3; border-radius: 6px; font-size: 13px; font-weight: 600; white-space: nowrap; }
+    .copy-button:hover { background: var(--white); }
+
+    .stats { display: flex; gap: 38px; margin-top: 40px; padding-top: 23px; border-top: 1px solid var(--line); }
+    .stat strong { display: block; font-size: 23px; letter-spacing: -.04em; }
+    .stat span { display: block; margin-top: 4px; color: var(--muted); font-size: 12px; }
+
+    .history { margin-top: 88px; }
+    .section-heading { display: flex; align-items: baseline; justify-content: space-between; margin-bottom: 18px; }
+    h2 { margin: 0; font-size: 19px; letter-spacing: -.04em; }
+    .section-heading a { color: var(--muted); font-size: 12px; text-decoration: none; }
+    .history-table { overflow: hidden; background: var(--white); border: 1px solid var(--line); border-radius: 10px; }
+    .row { display: grid; grid-template-columns: 1.1fr 1.5fr .55fr auto; align-items: center; gap: 22px; padding: 19px 22px; border-bottom: 1px solid var(--line); }
+    .row:last-child { border-bottom: 0; }
+    .row.header { padding-top: 13px; padding-bottom: 13px; color: var(--muted); background: #faf9f2; font-family: "DM Mono", monospace; font-size: 10px; text-transform: uppercase; letter-spacing: .05em; }
+    .short-url { font-family: "DM Mono", monospace; font-size: 13px; font-weight: 500; }
+    .long-url { overflow: hidden; color: var(--muted); font-size: 13px; text-overflow: ellipsis; white-space: nowrap; }
+    .clicks { color: var(--muted); font-size: 13px; }
+    .mini-copy { padding: 7px 10px; color: var(--ink); background: transparent; border: 1px solid var(--line); border-radius: 5px; font-size: 12px; }
+    .mini-copy:hover { border-color: var(--ink); }
+
+    footer { width: min(960px, calc(100% - 48px)); margin: 0 auto; padding: 22px 0 30px; color: var(--muted); font-family: "DM Mono", monospace; font-size: 11px; }
+    @keyframes rise { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
+
+    @media (max-width: 640px) {
+      header, main, footer { width: min(100% - 32px, 960px); }
+      header { padding: 20px 0; }
+      nav { gap: 14px; }
+      nav a:not(.nav-button) { display: none; }
+      main { padding-top: 59px; }
+      h1 { font-size: clamp(44px, 14vw, 68px); }
+      .shorten-card { display: block; padding: 8px; }
+      .url-input { width: 100%; padding: 14px 12px; }
+      .shorten-button { width: 100%; }
+      .result { align-items: flex-start; flex-direction: column; }
+      .stats { gap: 22px; }
+      .row { grid-template-columns: 1fr auto; gap: 8px 14px; padding: 16px; }
+      .row.header { display: none; }
+      .long-url { grid-column: 1 / 2; grid-row: 2; font-size: 12px; }
+      .clicks { grid-column: 2; grid-row: 1; }
+      .mini-copy { grid-column: 2; grid-row: 2; }
+    }
+.brand-logo {
+    width: 78px;
+    height: 78px;
+    object-fit: contain;
+    display: block;
+}
+main {
+    width: min(960px, calc(100% - 48px));
+    margin: 0 auto;
+    padding: 35px 0 90px;
+}
+  </style>
+</head>
+<body>
+  <div class="page">
+    <header>
+      <a class="brand" href="#">
+    <img src="logo.png" alt="The Build Logo" class="brand-logo">
+</a>
+      <nav aria-label="Main navigation">
+        <a href="#history">Your links</a>
+        <a href="#api">API</a>
+        <a class="nav-button" href="login.html">Log in</a>
+      </nav>
+    </header>
+
+    <main>
+      <span class="eyebrow">The link, but shorter</span>
+      <h1>Make every link<br><span style="color: var(--yellow); text-shadow: 2px 2px 0 var(--ink);">snap.</span></h1>
+      <p class="intro">Turn long, unwieldy URLs into clean links people actually want to click. Fast, memorable, and ready to share.</p>
+
+      <form class="shorten-card" id="shorten-form">
+        <input class="url-input" id="url-input" type="url" placeholder="Paste your long URL here..." aria-label="Long URL" required>
+        <button class="shorten-button" type="submit">Shorten link <span aria-hidden="true">→</span></button>
+      </form>
+      <div class="result" id="result" role="status">
+        <span>Short link ready: <strong class="result-url" id="result-url">snap.link/hello</strong></span>
+        <button class="copy-button" id="copy-button" type="button">Copy link</button>
+      </div>
+
+      <div class="stats" aria-label="Snaplink statistics">
+        <div class="stat"><strong>12.4k</strong><span>links shortened</span></div>
+        <div class="stat"><strong>98.6%</strong><span>uptime this month</span></div>
+        <div class="stat"><strong>0.2s</strong><span>average response</span></div>
+      </div>
+
+      <section class="history" id="history">
+        <div class="section-heading"><h2>Recent links</h2><a href="history.html">View all links ↗</a></div>
+        <div class="history-table">
+          <div class="row header"><span>Short link</span><span>Original URL</span><span>Clicks</span><span></span></div>
+          <div class="row"><span class="short-url">snap.link/launch</span><span class="long-url">https://www.producthunt.com/posts/snaplink-launch</span><span class="clicks">248</span><button class="mini-copy" type="button" data-copy="https://snap.link/launch">Copy</button></div>
+          <div class="row"><span class="short-url">snap.link/notes</span><span class="long-url">https://docs.example.com/team/weekly-notes-and-updates</span><span class="clicks">91</span><button class="mini-copy" type="button" data-copy="https://snap.link/notes">Copy</button></div>
+          <div class="row"><span class="short-url">snap.link/hello</span><span class="long-url">https://www.snaplink.com/welcome-to-the-internet</span><span class="clicks">64</span><button class="mini-copy" type="button" data-copy="https://snap.link/hello">Copy</button></div>
+        </div>
+      </section>
+    </main>
+    <footer>© 2026 The build &nbsp; / &nbsp; Links made simple.</footer>
+  </div>
+
+  <script>
+    const form = document.getElementById('shorten-form');
+    const input = document.getElementById('url-input');
+    const result = document.getElementById('result');
+    const resultUrl = document.getElementById('result-url');
+    const copyButton = document.getElementById('copy-button');
+
+    function copyText(text, button) {
+      navigator.clipboard?.writeText(text);
+      const original = button.textContent;
+      button.textContent = 'Copied!';
+      setTimeout(() => { button.textContent = original; }, 1400);
+    }
+
+    form.addEventListener('submit', (event) => {
+      event.preventDefault();
+      const host = new URL(input.value).hostname.replace('www.', '').split('.')[0];
+      resultUrl.textContent = `snap.link/${host || 'your-link'}`;
+      result.classList.add('visible');
+    });
+
+    copyButton.addEventListener('click', () => copyText(`https://${resultUrl.textContent}`, copyButton));
+    document.querySelectorAll('[data-copy]').forEach((button) => {
+      button.addEventListener('click', () => copyText(button.dataset.copy, button));
+    });
+  </script>
+</body>
+</html>
